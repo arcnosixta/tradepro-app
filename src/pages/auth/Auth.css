@@ -1,0 +1,187 @@
+/* ═══════════════════════════════════════════════════════════
+   AUTH PAGE — Premium Glass Card with Animated Orbs
+   ═══════════════════════════════════════════════════════════ */
+
+.auth-page {
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  padding: var(--sp-5);
+  background: var(--bg);
+}
+
+/* ─── Background Orbs ─── */
+.auth-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+
+.auth-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(100px); opacity: 0.35;
+  will-change: transform;
+}
+.auth-orb-1 {
+  width: 500px; height: 500px; background: var(--accent);
+  top: -150px; right: -100px;
+}
+.auth-orb-2 {
+  width: 400px; height: 400px; background: #06b6d4;
+  bottom: -100px; left: -100px;
+}
+.auth-orb-3 {
+  width: 300px; height: 300px; background: #a855f7;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+
+/* ─── Grid Lines ─── */
+.auth-grid-lines {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridPulse 4s ease-in-out infinite;
+}
+
+@keyframes gridPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ─── Auth Card ─── */
+.auth-card {
+  width: 100%; max-width: 420px;
+  background: rgba(18, 18, 26, 0.8);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-10) var(--sp-10);
+  position: relative; z-index: 1;
+  box-shadow:
+    var(--shadow-xl),
+    0 0 0 0.5px rgba(255,255,255,0.05) inset,
+    0 0 40px rgba(34, 197, 94, 0.05);
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), #06b6d4, transparent);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  opacity: 0.6;
+}
+
+/* ─── Logo ─── */
+.auth-logo {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--sp-3); font-size: var(--text-xl); font-weight: 800;
+  color: var(--text); margin-bottom: var(--sp-8);
+  letter-spacing: -0.02em;
+}
+.auth-logo-icon {
+  color: var(--accent); font-size: 1.6rem;
+  text-shadow: 0 0 16px var(--accent-glow);
+}
+
+/* ─── Headings ─── */
+.auth-card h1 {
+  font-size: var(--text-2xl); font-weight: 800;
+  text-align: center; margin-bottom: var(--sp-2);
+  color: var(--text); letter-spacing: -0.03em;
+}
+.auth-subtitle {
+  text-align: center; color: var(--text-secondary);
+  margin-bottom: var(--sp-8); font-size: var(--text-sm);
+}
+
+/* ─── Error ─── */
+.auth-error {
+  background: rgba(239, 68, 68, 0.15); color: #ef4444;
+  padding: var(--sp-3) var(--sp-4); border-radius: var(--radius);
+  font-size: var(--text-sm); margin-bottom: var(--sp-4);
+  text-align: center;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* ─── Field ─── */
+.auth-card .field { margin-bottom: var(--sp-5); }
+.auth-card .field label {
+  display: block; font-size: var(--text-sm); font-weight: 600;
+  color: var(--text-secondary); margin-bottom: var(--sp-2);
+}
+
+.auth-card .field input {
+  width: 100%; padding: var(--sp-4) var(--sp-4);
+  background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  color: var(--text); font-size: var(--text-base);
+  font-family: inherit; outline: none;
+  transition: border-color var(--duration-normal),
+              box-shadow var(--duration-normal),
+              background var(--duration-normal);
+}
+.auth-card .field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 0 20px var(--accent-glow);
+  background: rgba(34, 197, 94, 0.03);
+}
+
+/* ─── Submit Button ─── */
+.auth-submit {
+  width: 100%; padding: var(--sp-4);
+  background: var(--accent); color: var(--tg-button-text);
+  font-size: var(--text-base); font-weight: 700;
+  border: none; border-radius: var(--radius);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 52px;
+  position: relative; overflow: hidden;
+  transition: all var(--duration-normal) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.auth-submit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 50%);
+  opacity: 0;
+  transition: opacity var(--duration-normal);
+}
+.auth-submit:hover::before { opacity: 1; }
+.auth-submit:hover {
+  box-shadow: var(--shadow-md), 0 0 24px var(--accent-glow);
+}
+.auth-submit:active { transform: scale(0.98); }
+.auth-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.auth-spinner {
+  width: 22px; height: 22px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%;
+}
+
+/* ─── Switch ─── */
+.auth-switch {
+  text-align: center; margin-top: var(--sp-6);
+  color: var(--text-secondary); font-size: var(--text-sm);
+}
+.auth-switch a {
+  color: var(--accent); font-weight: 700;
+  transition: text-shadow var(--duration-fast);
+}
+.auth-switch a:hover {
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: var(--sp-8) var(--sp-6);
+    border-radius: var(--radius-xl);
+    margin: var(--sp-4);
+  }
+  .auth-card h1 { font-size: var(--text-xl); }
+}
