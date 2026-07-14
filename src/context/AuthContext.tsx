@@ -21,6 +21,7 @@ export interface UserProfile {
   joinedAt: string
   admin?: boolean
   banned?: boolean
+  premium?: boolean
 }
 
 interface AuthContextType {

@@ -5,40 +5,12 @@ import {
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { fetchLiveNews, fetchTrendingCoins } from '../services/newsApi'
+import type {
+  Course, Module, Lesson, Quiz, QuizQuestion, QuizResult,
+  Trade, NewsItem, CommunityPost, Notification, Comment, AdminUser, UserProgressEntry,
+} from '../types'
 
-/* ─── Types ─── */
-export interface Course {
-  id: string; title: string; description: string; image: string
-  level: 'Начинающий' | 'Средний' | 'Продвинутый'
-  lessonsCount: number; duration: string; modules: Module[]; order: number
-}
-export interface Module { id: string; title: string; lessons: Lesson[] }
-export interface Lesson { id: string; title: string; duration: string; type: 'video' | 'text' | 'quiz' }
-
-export interface Trade {
-  id: string; userId: string; symbol: string; type: 'LONG' | 'SHORT'
-  entryPrice: number; exitPrice: number; quantity: number; pnl: number
-  pnlPercent: number; status: 'open' | 'closed'; openedAt: string
-  closedAt?: string; notes: string; tags: string[]; createdAt: any
-}
-
-export interface NewsItem {
-  id: string; title: string; summary: string; image: string
-  category: string; date: string; source: string
-}
-
-export interface CommunityPost {
-  id: string; authorUid: string; authorName: string; authorAvatar: string
-  authorBadge?: string; content: string; image?: string
-  likes: number; comments: number; likedBy: string[]
-  savedBy?: string[]; views?: number; createdAt: any; tags: string[]
-}
-
-export interface Notification {
-  id: string; userId: string; type: 'like' | 'comment' | 'follow'
-  fromUid: string; fromName: string; postId?: string
-  message: string; read: boolean; createdAt: any
-}
+export type { Course, Module, Lesson, Quiz, QuizQuestion, QuizResult, Trade, NewsItem, CommunityPost, Notification, Comment, AdminUser, UserProgressEntry }
 
 /* ─── Image upload helper ─── */
 export async function uploadImage(file: File, _path: string): Promise<string> {
@@ -52,12 +24,12 @@ export async function uploadImage(file: File, _path: string): Promise<string> {
 
 /* ─── Default news ─── */
 const DEFAULT_NEWS: NewsItem[] = [
-  { id: 'd1', title: 'Bitcoin достиг нового ATH: $73,000', summary: 'Биткоин обновил исторический максимум на фоне институциональных инвестиций и одобрения ETF.', image: 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=600&q=80', category: 'Криптовалюта', date: new Date().toISOString(), source: 'CoinDesk' },
-  { id: 'd2', title: 'ФРС сохранила ставку без изменений', summary: 'Федеральная резервная система приняла решение о сохранении текущей процентной ставки на уровне 5.25-5.50%.', image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80', category: 'Макроэкономика', date: new Date(Date.now() - 3600000 * 5).toISOString(), source: 'Reuters' },
-  { id: 'd3', title: 'Ethereum готовится к обновлению Pectra', summary: 'Девелоперы анонсировали обновление для улучшения масштабируемости сети.', image: 'https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=600&q=80', category: 'Криптовалюта', date: new Date(Date.now() - 3600000 * 8).toISOString(), source: 'The Block' },
-  { id: 'd4', title: 'Рост AI-токенов на 500%', summary: 'Токены искусственного интеллекта показали рекордный рост за квартал.', image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=80', category: 'Криптовалюта', date: new Date(Date.now() - 3600000 * 12).toISOString(), source: 'Bloomberg' },
-  { id: 'd5', title: 'Япония ужесточает регулирование криптовалют', summary: 'Новые правила вступают в силу с января 2025 года.', image: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&q=80', category: 'Регуляторика', date: new Date(Date.now() - 86400000).toISOString(), source: 'Nikkei' },
-  { id: 'd6', title: 'Золото обновило 6-месячный максимум', summary: 'Безопасные активы растут на фоне геополитической напряжённости.', image: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?w=600&q=80', category: 'Сырьё', date: new Date(Date.now() - 86400000 * 2).toISOString(), source: 'Financial Times' },
+  { id: 'd1', title: 'Bitcoin достиг нового ATH: $73,000', summary: 'Биткоин обновил исторический максимум на фоне институциональных инвестиций и одобрения ETF.', image: 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=600&q=80', category: 'Криптовалюта', date: new Date().toISOString(), source: 'CoinDesk', impact: 'low' },
+  { id: 'd2', title: 'ФРС сохранила ставку без изменений', summary: 'Федеральная резервная система приняла решение о сохранении текущей процентной ставки на уровне 5.25-5.50%.', image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80', category: 'Макроэкономика', date: new Date(Date.now() - 3600000 * 5).toISOString(), source: 'Reuters', impact: 'high' },
+  { id: 'd3', title: 'EUR/USD обновил 3-месячный максимум', summary: 'Евро укрепляется на фоне ожиданий изменения денежно-кредитной политики ФРС.', image: 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=600&q=80', category: 'Валюты', date: new Date(Date.now() - 3600000 * 8).toISOString(), source: 'Bloomberg', impact: 'medium' },
+  { id: 'd4', title: 'Apple и Microsoft обновили максимумы', summary: 'Технологические акции растут на фоне сильных квартальных отчётов.', image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80', category: 'Акции', date: new Date(Date.now() - 3600000 * 12).toISOString(), source: 'Reuters', impact: 'low' },
+  { id: 'd5', title: 'Ethereum готовится к обновлению Pectra', summary: 'Девелоперы анонсировали обновление для улучшения масштабируемости сети.', image: 'https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=600&q=80', category: 'Криптовалюта', date: new Date(Date.now() - 86400000).toISOString(), source: 'The Block', impact: 'low' },
+  { id: 'd6', title: 'Золото обновило 6-месячный максимум', summary: 'Безопасные активы растут на фоне геополитической напряжённости.', image: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?w=600&q=80', category: 'Сырьё', date: new Date(Date.now() - 86400000 * 2).toISOString(), source: 'Financial Times', impact: 'high' },
 ]
 
 /* ─── Default courses ─── */
@@ -65,7 +37,7 @@ const DEFAULT_COURSES: Course[] = [
   {
     id: 'dc1', title: 'Основы трейдинга', description: 'Полный курс для начинающих. От азов до первой стратегии.',
     image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80',
-    level: 'Начинающий', lessonsCount: 11, duration: '6ч 15мин', order: 1,
+    level: 'Начинающий', lessonsCount: 11, duration: '6ч 15мин', order: 1, premium: false,
     modules: [
       { id: 'dm1', title: 'Введение в рынки', lessons: [
         { id: 'dl1', title: 'Что такое трейдинг?', duration: '15мин', type: 'video' },
@@ -89,7 +61,7 @@ const DEFAULT_COURSES: Course[] = [
   {
     id: 'dc2', title: 'Трейдинг-стратегии', description: 'Скейлинг, дейтрейдинг, свинг — рабочие стратегии.',
     image: 'https://images.unsplash.com/photo-1535320903710-d993d3d77d29?w=800&q=80',
-    level: 'Средний', lessonsCount: 5, duration: '3ч 35мин', order: 2,
+    level: 'Средний', lessonsCount: 5, duration: '3ч 35мин', order: 2, premium: false,
     modules: [
       { id: 'dm4', title: 'Скейлинг-стратегии', lessons: [
         { id: 'dl12', title: 'Введение в скейлинг', duration: '20мин', type: 'video' },
@@ -105,7 +77,7 @@ const DEFAULT_COURSES: Course[] = [
   {
     id: 'dc3', title: 'Продвинутый анализ', description: 'Микроструктура рынка и алгоритмические стратегии.',
     image: 'https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=800&q=80',
-    level: 'Продвинутый', lessonsCount: 2, duration: '50мин', order: 3,
+    level: 'Продвинутый', lessonsCount: 2, duration: '50мин', order: 3, premium: false,
     modules: [
       { id: 'dm6', title: 'Микроструктура', lessons: [
         { id: 'dl17', title: 'Order book dynamics', duration: '28мин', type: 'video' },
@@ -179,6 +151,139 @@ export function useUserProgress(userId: string | undefined) {
   return { progress, loading, toggleLesson }
 }
 
+/* ─── Quizzes ─── */
+export function useQuiz(lessonId: string | undefined) {
+  const [quiz, setQuiz] = useState<Quiz | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!lessonId) { setQuiz(null); setLoading(false); return }
+    const q = query(collection(db, 'quizzes'), where('lessonId', '==', lessonId))
+    const unsub = onSnapshot(q, snap => {
+      if (snap.docs.length > 0) {
+        setQuiz({ id: snap.docs[0].id, ...snap.docs[0].data() } as Quiz)
+      } else {
+        setQuiz(null)
+      }
+      setLoading(false)
+    }, err => { console.error('Quiz error:', err); setLoading(false) })
+    return unsub
+  }, [lessonId])
+
+  return { quiz, loading }
+}
+
+export function useQuizById(quizId: string | undefined) {
+  const [quiz, setQuiz] = useState<Quiz | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!quizId) { setQuiz(null); setLoading(false); return }
+    const ref = doc(db, 'quizzes', quizId)
+    const unsub = onSnapshot(ref, snap => {
+      setQuiz(snap.exists() ? { id: snap.id, ...snap.data() } as Quiz : null)
+      setLoading(false)
+    }, err => { console.error('QuizById error:', err); setLoading(false) })
+    return unsub
+  }, [quizId])
+
+  return { quiz, loading }
+}
+
+export function useQuizResult(userId: string | undefined, quizId: string | undefined) {
+  const [result, setResult] = useState<QuizResult | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!userId || !quizId) { setResult(null); setLoading(false); return }
+    const ref = doc(db, 'users', userId, 'quizResults', quizId)
+    const unsub = onSnapshot(ref, snap => {
+      setResult(snap.exists() ? { id: snap.id, ...snap.data() } as QuizResult : null)
+      setLoading(false)
+    }, err => { console.error('QuizResult error:', err); setLoading(false) })
+    return unsub
+  }, [userId, quizId])
+
+  return { result, loading }
+}
+
+export function useAllQuizResults(userId: string | undefined) {
+  const [results, setResults] = useState<Record<string, QuizResult>>({})
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!userId) { setResults({}); setLoading(false); return }
+    const unsub = onSnapshot(
+      collection(db, 'users', userId, 'quizResults'),
+      snap => {
+        const map: Record<string, QuizResult> = {}
+        snap.docs.forEach(d => { map[d.id] = { id: d.id, ...d.data() } as QuizResult })
+        setResults(map)
+        setLoading(false)
+      },
+      err => { console.error('AllQuizResults error:', err); setLoading(false) }
+    )
+    return unsub
+  }, [userId])
+
+  return { results, loading }
+}
+
+export async function submitQuiz(
+  userId: string,
+  quizId: string,
+  answers: Record<number, string>,
+  questions: QuizQuestion[],
+  passScore: number,
+): Promise<QuizResult> {
+  let correct = 0
+  questions.forEach((q, i) => {
+    const userAns = (answers[i] || '').trim().toLowerCase()
+    if (q.type === 'choice' && q.options) {
+      const idx = parseInt(q.correctAnswer, 10) - 1
+      const correctText = (q.options[idx] || '').trim().toLowerCase()
+      if (userAns === correctText) correct++
+    } else {
+      const correctAns = q.correctAnswer.trim().toLowerCase()
+      if (userAns === correctAns) correct++
+    }
+  })
+  const score = questions.length > 0 ? Math.round((correct / questions.length) * 100) : 0
+  const passed = score >= passScore
+  const resultData: Omit<QuizResult, 'id'> = {
+    score, passed, answers, completedAt: new Date().toISOString(),
+  }
+  const ref = doc(db, 'users', userId, 'quizResults', quizId)
+  await setDoc(ref, resultData)
+  return { id: quizId, ...resultData }
+}
+
+export function useAllQuizzes() {
+  const [quizzes, setQuizzes] = useState<Quiz[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const unsub = onSnapshot(
+      collection(db, 'quizzes'),
+      snap => { setQuizzes(snap.docs.map(d => ({ id: d.id, ...d.data() } as Quiz))); setLoading(false) },
+      err => { console.error('AllQuizzes error:', err); setLoading(false) }
+    )
+    return unsub
+  }, [])
+
+  const addQuiz = async (data: Omit<Quiz, 'id'>) => {
+    try { await addDoc(collection(db, 'quizzes'), data) } catch (err) { console.error('addQuiz error:', err); throw err }
+  }
+  const updateQuiz = async (id: string, data: Partial<Quiz>) => {
+    try { await updateDoc(doc(db, 'quizzes', id), data) } catch (err) { console.error('updateQuiz error:', err); throw err }
+  }
+  const deleteQuiz = async (id: string) => {
+    try { await deleteDoc(doc(db, 'quizzes', id)) } catch (err) { console.error('deleteQuiz error:', err); throw err }
+  }
+
+  return { quizzes, loading, addQuiz, updateQuiz, deleteQuiz }
+}
+
 /* ─── Trades ─── */
 export function useTrades(userId: string | undefined) {
   const [trades, setTrades] = useState<Trade[]>([])
@@ -236,6 +341,7 @@ export function useNews() {
         setNews(liveItems.map(n => ({
           id: n.id, title: n.title, summary: n.summary,
           image: n.image, category: n.category, date: n.date, source: n.source,
+          impact: n.impact,
         })))
       }
       setLastRefresh(new Date())
@@ -319,12 +425,11 @@ export function useCommunity(sortBy: 'popular' | 'newest' = 'newest') {
         batch.update(ref, { likedBy: liked.filter((id: string) => id !== userId), likes: (d.likes || 0) - 1 })
       } else {
         batch.update(ref, { likedBy: [...liked, userId], likes: (d.likes || 0) + 1 })
-        // Create notification for post author
         if (d.authorUid !== userId) {
           const notifRef = doc(collection(db, 'notifications'))
           batch.set(notifRef, {
-            userId: d.authorUid, type: 'like', fromUid: userId, fromName: '',
-            postId, message: 'поставил лайк вашему посту', read: false, createdAt: serverTimestamp(),
+            type: 'like', title: 'Новый лайк', body: 'поставил лайк вашему посту',
+            link: '/community', read: false, createdAt: serverTimestamp(), userId: d.authorUid,
           })
         }
       }
@@ -358,11 +463,6 @@ export function useCommunity(sortBy: 'popular' | 'newest' = 'newest') {
 }
 
 /* ─── Comments ─── */
-export interface Comment {
-  id: string; postId: string; authorUid: string; authorName: string
-  content: string; createdAt: any
-}
-
 export function useComments(postId: string | null) {
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
@@ -385,12 +485,10 @@ export function useComments(postId: string | null) {
       const snap = await getDoc(ref)
       if (snap.exists()) {
         await updateDoc(ref, { comments: (snap.data().comments || 0) + 1 })
-        // Create notification
         if (snap.data().authorUid !== data.authorUid) {
           await addDoc(collection(db, 'notifications'), {
-            userId: snap.data().authorUid, type: 'comment', fromUid: data.authorUid,
-            fromName: data.authorName, postId, message: 'прокомментировал ваш пост',
-            read: false, createdAt: serverTimestamp(),
+            type: 'comment', title: 'Новый комментарий', body: `${data.authorName} прокомментировал ваш пост`,
+            link: '/community', read: false, createdAt: serverTimestamp(), userId: snap.data().authorUid,
           })
         }
       }
@@ -410,38 +508,6 @@ export function useComments(postId: string | null) {
   }
 
   return { comments, loading, addComment, deleteComment }
-}
-
-/* ─── Notifications ─── */
-export function useNotifications(userId: string | undefined) {
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [unreadCount, setUnreadCount] = useState(0)
-
-  useEffect(() => {
-    if (!userId) return
-    const unsub = onSnapshot(
-      query(collection(db, 'notifications'), where('userId', '==', userId), orderBy('createdAt', 'desc')),
-      snap => {
-        const data = snap.docs.map(d => ({ id: d.id, ...d.data() } as Notification))
-        setNotifications(data)
-        setUnreadCount(data.filter(n => !n.read).length)
-      },
-      err => { console.error('Notifications error:', err) }
-    )
-    return unsub
-  }, [userId])
-
-  const markRead = async () => {
-    if (!userId) return
-    try {
-      const snap = await getDocs(query(collection(db, 'notifications'), where('userId', '==', userId), where('read', '==', false)))
-      const batch = writeBatch(db)
-      snap.docs.forEach(d => batch.update(d.ref, { read: true }))
-      await batch.commit()
-    } catch (err) { console.error(err) }
-  }
-
-  return { notifications, unreadCount, markRead }
 }
 
 /* ─── User Posts (for public profile) ─── */
@@ -491,18 +557,6 @@ export function useSavedPosts(userId: string | undefined) {
    ADMIN HOOKS
    ═══════════════════════════════════════════════════════════ */
 
-export interface AdminUser {
-  id: string
-  uid: string
-  name: string
-  email: string
-  avatar: string
-  bio: string
-  joinedAt: string
-  admin?: boolean
-  banned?: boolean
-}
-
 export function useAllUsers() {
   const [users, setUsers] = useState<AdminUser[]>([])
   const [loading, setLoading] = useState(true)
@@ -527,11 +581,15 @@ export function useAllUsers() {
     try { await updateDoc(doc(db, 'users', uid), { admin }) } catch (err) { console.error(err) }
   }
 
+  const setPremium = async (uid: string, premium: boolean) => {
+    try { await updateDoc(doc(db, 'users', uid), { premium }) } catch (err) { console.error(err) }
+  }
+
   const deleteUser = async (uid: string) => {
     try { await deleteDoc(doc(db, 'users', uid)) } catch (err) { console.error(err) }
   }
 
-  return { users, loading, banUser, setAdmin, deleteUser }
+  return { users, loading, banUser, setAdmin, setPremium, deleteUser }
 }
 
 export function useAllTrades() {
@@ -612,64 +670,89 @@ export function useAdminStats() {
     totalComments: 0,
     bannedUsers: 0,
     adminUsers: 0,
+    premiumUsers: 0,
     newUsersToday: 0,
     activeTraders: 0,
   })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'users'), userSnap => {
-      const users = userSnap.docs.map(d => d.data())
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
-      const todayMs = today.getTime()
+    let cancelled = false
 
-      const newToday = users.filter(u => {
-        const joined = u.joinedAt ? new Date(u.joinedAt).getTime() : 0
-        return joined >= todayMs
-      }).length
+    const fetchStats = async () => {
+      try {
+        const [usersSnap, postsSnap, tradesSnap] = await Promise.all([
+          getDocs(collection(db, 'users')),
+          getDocs(collection(db, 'posts')),
+          getDocs(query(collection(db, 'trades'), orderBy('createdAt', 'desc'))),
+        ])
+        if (cancelled) return
 
-      setStats(prev => ({
-        ...prev,
-        totalUsers: userSnap.size,
-        bannedUsers: users.filter(u => u.banned).length,
-        adminUsers: users.filter(u => u.admin).length,
-        newUsersToday: newToday,
-      }))
-      setLoading(false)
-    }, () => setLoading(false))
+        const users = usersSnap.docs.map(d => d.data())
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const todayMs = today.getTime()
+        const trades = tradesSnap.docs.map(d => d.data())
+        const uniqueTraderUids = new Set(trades.map(t => t.userId))
 
-    const unsubPosts = onSnapshot(collection(db, 'posts'), postSnap => {
-      setStats(prev => ({ ...prev, totalPosts: postSnap.size }))
-    })
-
-    const unsubTrades = onSnapshot(
-      query(collection(db, 'trades'), orderBy('createdAt', 'desc')),
-      tradeSnap => {
-        const trades = tradeSnap.docs.map(d => d.data())
-        const uniqueUsers = new Set(trades.map(t => t.userId))
-        setStats(prev => ({
-          ...prev,
-          totalTrades: tradeSnap.size,
-          activeTraders: uniqueUsers.size,
-        }))
+        setStats({
+          totalUsers: usersSnap.size,
+          totalPosts: postsSnap.size,
+          totalTrades: tradesSnap.size,
+          totalComments: 0,
+          bannedUsers: users.filter(u => u.banned).length,
+          adminUsers: users.filter(u => u.admin).length,
+          premiumUsers: users.filter(u => u.premium).length,
+          newUsersToday: users.filter(u => {
+            const joined = u.joinedAt ? new Date(u.joinedAt).getTime() : 0
+            return joined >= todayMs
+          }).length,
+          activeTraders: uniqueTraderUids.size,
+        })
+      } catch (err) {
+        console.error('AdminStats error:', err)
       }
-    )
+      if (!cancelled) setLoading(false)
+    }
 
-    return () => { unsub(); unsubPosts(); unsubTrades() }
+    fetchStats()
+    const interval = setInterval(fetchStats, 30_000)
+    return () => { cancelled = true; clearInterval(interval) }
   }, [])
 
   return { stats, loading }
 }
 
-/* ─── All Users Progress (Admin) ─── */
-export interface UserProgressEntry {
-  uid: string
-  name: string
-  email: string
-  courses: Record<string, { completed: number; total: number; pct: number; lessons: string[] }>
+export function useAnalyticsData() {
+  const [data, setData] = useState<{ users: AdminUser[]; trades: Trade[]; posts: CommunityPost[] }>({ users: [], trades: [], posts: [] })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    const load = async () => {
+      try {
+        const [usersSnap, tradesSnap, postsSnap] = await Promise.all([
+          getDocs(collection(db, 'users')),
+          getDocs(query(collection(db, 'trades'), orderBy('createdAt', 'desc'))),
+          getDocs(query(collection(db, 'posts'), orderBy('createdAt', 'desc'))),
+        ])
+        if (cancelled) return
+        setData({
+          users: usersSnap.docs.map(d => ({ id: d.id, ...d.data() } as AdminUser)),
+          trades: tradesSnap.docs.map(d => ({ id: d.id, ...d.data() } as Trade)),
+          posts: postsSnap.docs.map(d => ({ id: d.id, ...d.data() } as CommunityPost)),
+        })
+      } catch (err) { console.error('AnalyticsData error:', err) }
+      if (!cancelled) setLoading(false)
+    }
+    load()
+    return () => { cancelled = true }
+  }, [])
+
+  return { ...data, loading }
 }
 
+/* ─── All Users Progress (Admin) ─── */
 export function useAllUsersProgress(courses: Course[]) {
   const [usersProgress, setUsersProgress] = useState<UserProgressEntry[]>([])
   const [loading, setLoading] = useState(true)

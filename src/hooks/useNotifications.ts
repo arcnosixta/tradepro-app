@@ -1,4 +1,4 @@
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, writeBatch, serverTimestamp, setDoc, getDocs, type Timestamp } from 'firebase/firestore'
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, writeBatch, serverTimestamp, addDoc, getDocs, where, type Timestamp } from 'firebase/firestore'
 import { db } from '../firebase'
 import { useState, useEffect, useCallback } from 'react'
 
@@ -10,7 +10,7 @@ export interface Notification {
   link?: string
   read: boolean
   createdAt: Timestamp | null
-  uid: string
+  userId: string
 }
 
 export function useNotifications(uid: string | undefined) {
@@ -21,71 +21,74 @@ export function useNotifications(uid: string | undefined) {
   useEffect(() => {
     if (!uid) { setLoading(false); return }
     const q = query(
-      collection(db, 'users', uid, 'notifications'),
+      collection(db, 'notifications'),
+      where('userId', '==', uid),
       orderBy('createdAt', 'desc')
     )
     const unsub = onSnapshot(q, snap => {
       setNotifications(snap.docs.map(d => ({ id: d.id, ...d.data() } as Notification)))
       setLoading(false)
-    }, () => setLoading(false))
+    }, err => { console.error('Notifications listen error:', err); setLoading(false) })
     return unsub
   }, [uid])
 
   const markRead = useCallback(async (id: string) => {
-    if (!uid) return
-    await updateDoc(doc(db, 'users', uid, 'notifications', id), { read: true })
-  }, [uid])
+    await updateDoc(doc(db, 'notifications', id), { read: true })
+  }, [])
 
   const markAllRead = useCallback(async () => {
-    if (!uid) return
+    const unreadIds = notifications.filter(n => !n.read).map(n => n.id)
+    if (unreadIds.length === 0) return
     const batch = writeBatch(db)
-    notifications.filter(n => !n.read).forEach(n => {
-      batch.update(doc(db, 'users', uid, 'notifications', n.id), { read: true })
+    unreadIds.forEach(id => {
+      batch.update(doc(db, 'notifications', id), { read: true })
     })
     await batch.commit()
-  }, [uid, notifications])
+  }, [notifications])
 
   return { notifications, loading, unread, markRead, markAllRead }
 }
 
 export async function addNotification(
   uid: string,
-  data: Omit<Notification, 'id' | 'read' | 'createdAt' | 'uid'>
+  data: Omit<Notification, 'id' | 'read' | 'createdAt' | 'userId'>
 ) {
-  const ref = doc(collection(db, 'users', uid, 'notifications'))
-  await setDoc(ref, {
+  await addDoc(collection(db, 'notifications'), {
     ...data,
     read: false,
     createdAt: serverTimestamp(),
-    uid,
+    userId: uid,
   })
 }
 
 export async function broadcastNotification(
-  data: Omit<Notification, 'id' | 'read' | 'createdAt' | 'uid'>
+  data: Omit<Notification, 'id' | 'read' | 'createdAt' | 'userId'>
 ): Promise<{ sent: number; errors: number }> {
   const usersSnap = await getDocs(collection(db, 'users'))
   const uids = usersSnap.docs.map(d => d.id)
   let sent = 0, errors = 0
 
-  for (let i = 0; i < uids.length; i += 500) {
-    const batch = writeBatch(db)
-    const chunk = uids.slice(i, i + 500)
-    chunk.forEach(uid => {
-      const ref = doc(collection(db, 'users', uid, 'notifications'))
-      batch.set(ref, {
-        ...data,
-        read: false,
-        createdAt: serverTimestamp(),
-        uid,
-      })
+  const CONCURRENCY = 10
+  for (let i = 0; i < uids.length; i += CONCURRENCY) {
+    const chunk = uids.slice(i, i + CONCURRENCY)
+    const results = await Promise.allSettled(
+      chunk.map(uid =>
+        addDoc(collection(db, 'notifications'), {
+          ...data,
+          read: false,
+          createdAt: serverTimestamp(),
+          userId: uid,
+        })
+      )
+    )
+    results.forEach((r, idx) => {
+      if (r.status === 'fulfilled') {
+        sent++
+      } else {
+        errors++
+        console.error(`Notification write failed for uid=${chunk[idx]}:`, r.reason)
+      }
     })
-    try {
-      await batch.commit()
-      sent += chunk.length
-    } catch {
-      errors += chunk.length
-    }
   }
 
   return { sent, errors }

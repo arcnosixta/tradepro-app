@@ -16,7 +16,7 @@ export default function AdminDashboard() {
     { icon: '💬', label: 'Постов', value: stats.totalPosts, color: '#22c55e', to: '/app/admin/community' },
     { icon: '📈', label: 'Сделок', value: stats.totalTrades, color: '#f59e0b', to: '/app/admin/analytics' },
     { icon: '🆕', label: 'Новых сегодня', value: stats.newUsersToday, color: '#a855f7', to: '/app/admin/users?filter=new' },
-    { icon: '🚫', label: 'Забанено', value: stats.bannedUsers, color: '#ef4444', to: '/app/admin/users?filter=banned' },
+    { icon: '⭐', label: 'Premium', value: stats.premiumUsers, color: '#f59e0b', to: '/app/admin/users?filter=premium' },
     { icon: '⚡', label: 'Активных трейдеров', value: stats.activeTraders, color: '#06b6d4', to: '/app/admin/analytics' },
   ]
 
@@ -68,6 +68,12 @@ export default function AdminDashboard() {
           <div className="admin-stat-icon">📢</div>
           <div className="admin-stat-label" style={{ marginBottom: 0, fontSize: 'var(--text-sm)', color: 'var(--text)', fontWeight: 700 }}>Оповещения</div>
           <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginTop: 4 }}>Рассылка пользователям</div>
+          <div className="admin-stat-arrow">→</div>
+        </motion.div>
+        <motion.div className="admin-stat admin-stat-clickable" variants={fadeUp} onClick={() => nav('/app/admin/quizzes')}>
+          <div className="admin-stat-icon">❓</div>
+          <div className="admin-stat-label" style={{ marginBottom: 0, fontSize: 'var(--text-sm)', color: 'var(--text)', fontWeight: 700 }}>Тесты</div>
+          <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginTop: 4 }}>Управление тестами</div>
           <div className="admin-stat-arrow">→</div>
         </motion.div>
       </motion.div>

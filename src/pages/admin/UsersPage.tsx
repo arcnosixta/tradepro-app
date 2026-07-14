@@ -15,11 +15,12 @@ function timeAgo(dateStr: string) {
   return `${Math.floor(diff / 604800)} нед назад`
 }
 
-function UserDetailModal({ user, onClose, onBan, onAdmin }: {
-  user: { uid: string; name: string; email: string; bio: string; joinedAt: string; admin?: boolean; banned?: boolean; avatar?: string }
+function UserDetailModal({ user, onClose, onBan, onAdmin, onPremium }: {
+  user: { uid: string; name: string; email: string; bio: string; joinedAt: string; admin?: boolean; banned?: boolean; premium?: boolean; avatar?: string }
   onClose: () => void
   onBan: () => void
   onAdmin: () => void
+  onPremium: () => void
 }) {
   const { posts } = useUserPosts(user.uid)
   const { trades } = useTrades(user.uid)
@@ -41,6 +42,7 @@ function UserDetailModal({ user, onClose, onBan, onAdmin }: {
             <div className="user-detail-meta">
               {user.joinedAt && <span>📅 {new Date(user.joinedAt).toLocaleDateString('ru', { day: 'numeric', month: 'long', year: 'numeric' })}</span>}
               {user.admin && <span className="admin-badge admin-badge-admin">👑 Админ</span>}
+              {user.premium && <span className="admin-badge" style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(249,115,22,0.15))', color: '#f59e0b' }}>⭐ Premium</span>}
               {user.banned && <span className="admin-badge admin-badge-banned">🚫 Забанен</span>}
             </div>
           </div>
@@ -106,6 +108,9 @@ function UserDetailModal({ user, onClose, onBan, onAdmin }: {
           <button className={`admin-btn ${user.admin ? 'admin-btn-warn' : 'admin-btn-success'}`} onClick={onAdmin}>
             {user.admin ? 'Снять админа' : '👑 Назначить админом'}
           </button>
+          <button className={`admin-btn ${user.premium ? 'admin-btn-warn' : 'admin-btn-success'}`} onClick={onPremium}>
+            {user.premium ? 'Снять Premium' : '⭐ Выдать Premium'}
+          </button>
           <button className={`admin-btn ${user.banned ? 'admin-btn-success' : 'admin-btn-danger'}`} onClick={onBan}>
             {user.banned ? 'Разбанить' : '🚫 Забанить'}
           </button>
@@ -141,7 +146,7 @@ function ConfirmModal({ open, title, message, onConfirm, onCancel }: ConfirmModa
 }
 
 export default function UsersPage() {
-  const { users, loading, banUser, setAdmin } = useAllUsers()
+  const { users, loading, banUser, setAdmin, setPremium } = useAllUsers()
   const { toast } = useToast()
   const nav = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -205,6 +210,19 @@ export default function UsersPage() {
     })
   }
 
+  const handlePremium = (u: typeof users[0]) => {
+    setConfirmAction({
+      title: u.premium ? 'Снять Premium?' : 'Выдать Premium?',
+      message: `${u.premium ? 'Отобрать' : 'Дать'} ${u.name} (${u.email}) Premium доступ?`,
+      action: async () => {
+        await setPremium(u.uid, !u.premium)
+        toast(u.premium ? 'Premium отобран' : 'Premium выдан', 'success')
+        setConfirmAction(null)
+        setSelectedUser(null)
+      },
+    })
+  }
+
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} style={{ maxWidth: 1100 }}>
       <div style={{ marginBottom: 24 }}>
@@ -261,6 +279,7 @@ export default function UsersPage() {
                     <td>
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                         {u.admin && <span className="admin-badge admin-badge-admin">👑 Админ</span>}
+                        {u.premium && <span className="admin-badge" style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(249,115,22,0.15))', color: '#f59e0b' }}>⭐ Premium</span>}
                         {u.banned && <span className="admin-badge admin-badge-banned">🚫 Забанен</span>}
                       </div>
                     </td>
@@ -269,6 +288,9 @@ export default function UsersPage() {
                         <button className="admin-btn" onClick={() => setSelectedUser(u)}>👁</button>
                         <button className={`admin-btn ${u.admin ? 'admin-btn-warn' : 'admin-btn-success'}`} onClick={() => handleAdmin(u)}>
                           {u.admin ? 'Снять админа' : '👑 Админ'}
+                        </button>
+                        <button className={`admin-btn ${u.premium ? 'admin-btn-warn' : 'admin-btn-success'}`} onClick={() => handlePremium(u)}>
+                          {u.premium ? 'Снять Premium' : '⭐ Premium'}
                         </button>
                         <button className={`admin-btn ${u.banned ? 'admin-btn-success' : 'admin-btn-danger'}`} onClick={() => handleBan(u)}>
                           {u.banned ? 'Разбанить' : '🚫 Бан'}
@@ -293,6 +315,7 @@ export default function UsersPage() {
                   </div>
                   <div style={{ display: 'flex', gap: 6 }}>
                     {u.admin && <span className="admin-badge admin-badge-admin">👑</span>}
+                    {u.premium && <span className="admin-badge" style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(249,115,22,0.15))', color: '#f59e0b' }}>⭐</span>}
                     {u.banned && <span className="admin-badge admin-badge-banned">🚫</span>}
                   </div>
                 </div>
@@ -300,6 +323,9 @@ export default function UsersPage() {
                 <div className="admin-actions" style={{ marginTop: 8 }} onClick={e => e.stopPropagation()}>
                   <button className={`admin-btn ${u.admin ? 'admin-btn-warn' : 'admin-btn-success'}`} onClick={() => handleAdmin(u)}>
                     {u.admin ? 'Снять' : '👑 Админ'}
+                  </button>
+                  <button className={`admin-btn ${u.premium ? 'admin-btn-warn' : 'admin-btn-success'}`} onClick={() => handlePremium(u)}>
+                    {u.premium ? 'Снять Premium' : '⭐ Premium'}
                   </button>
                   <button className={`admin-btn ${u.banned ? 'admin-btn-success' : 'admin-btn-danger'}`} onClick={() => handleBan(u)}>
                     {u.banned ? 'Разбан' : '🚫 Бан'}
@@ -318,6 +344,7 @@ export default function UsersPage() {
             onClose={() => setSelectedUser(null)}
             onBan={() => handleBan(selectedUser)}
             onAdmin={() => handleAdmin(selectedUser)}
+            onPremium={() => handlePremium(selectedUser)}
           />
         )}
       </AnimatePresence>

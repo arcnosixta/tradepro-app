@@ -1,16 +1,18 @@
 .notif-bell-wrap { position: relative; }
 
+button.notif-bell-btn,
 .notif-bell-btn {
   position: relative;
   width: 40px; height: 40px;
   border-radius: 12px;
-  border: 1.5px solid var(--border);
-  background: var(--bg-card);
+  border: 1.5px solid var(--border) !important;
+  background: var(--bg-card) !important;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.15s, border-color 0.15s;
 }
-.notif-bell-btn:hover { background: var(--surface); border-color: var(--accent); }
+button.notif-bell-btn:hover,
+.notif-bell-btn:hover { background: var(--surface) !important; border-color: var(--accent) !important; }
 
 .notif-bell-icon { font-size: 1.15rem; }
 
@@ -49,10 +51,12 @@
   border-bottom: 1px solid var(--border);
 }
 .notif-panel-title { font-weight: 700; font-size: var(--text-sm); color: var(--text); }
+button.notif-panel-mark,
 .notif-panel-mark {
-  font-size: var(--text-xs); color: var(--accent); background: none; border: none;
+  font-size: var(--text-xs); color: var(--accent) !important; background: none !important; border: none !important;
   cursor: pointer; font-weight: 600;
 }
+button.notif-panel-mark:hover,
 .notif-panel-mark:hover { text-decoration: underline; }
 
 .notif-panel-list {

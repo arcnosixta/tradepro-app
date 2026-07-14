@@ -130,7 +130,7 @@ body::after {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 9998;
+  z-index: -1;
   pointer-events: none;
   opacity: var(--noise-opacity);
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
@@ -237,7 +237,8 @@ ul, ol { list-style: none; }
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: border-color var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
 }
 
 .glass:hover {
@@ -256,7 +257,16 @@ ul, ol { list-style: none; }
 /* ═══════════════════════════════════════
    BUTTONS — Premium Interactions
    ═══════════════════════════════════════ */
-.btn {
+.btn,
+button.btn,
+button.btn-primary,
+button.btn-secondary,
+button.btn-ghost,
+button.btn-outline,
+button.btn-danger,
+button.btn-sm,
+button.btn-icon,
+button.btn-full {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -264,20 +274,28 @@ ul, ol { list-style: none; }
   font-weight: 700;
   font-size: var(--text-sm);
   border-radius: var(--radius);
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: box-shadow var(--duration-normal) var(--ease-out),
+              transform var(--duration-normal) var(--ease-out),
+              background var(--duration-normal) var(--ease-out),
+              color var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out);
   min-height: 48px;
   padding: var(--sp-3) var(--sp-6);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
+button.btn-primary,
 .btn-primary {
-  background: var(--accent);
-  color: var(--tg-button-text);
+  background: var(--accent) !important;
+  color: var(--tg-button-text) !important;
+  border: none !important;
   box-shadow: var(--shadow-sm), 0 0 0 0 var(--accent-glow);
 }
+button.btn-primary::before,
 .btn-primary::before {
   content: '';
   position: absolute;
@@ -286,28 +304,38 @@ ul, ol { list-style: none; }
   opacity: 0;
   transition: opacity var(--duration-normal);
 }
+button.btn-primary:hover,
 .btn-primary:hover {
   box-shadow: var(--shadow-md), 0 0 20px var(--accent-glow);
   transform: translateY(-1px);
 }
+button.btn-primary:hover::before,
 .btn-primary:hover::before { opacity: 1; }
+button.btn-primary:active,
 .btn-primary:active { transform: translateY(0) scale(0.97); box-shadow: var(--shadow-sm); }
+button.btn-primary:disabled,
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
+button.btn-secondary,
 .btn-secondary {
   background: var(--glass-bg);
   color: var(--text);
   border: 1px solid var(--glass-border);
   backdrop-filter: var(--glass-blur);
 }
+button.btn-secondary:hover,
 .btn-secondary:hover { background: var(--glass-bg-hover); border-color: var(--accent); }
 
+button.btn-ghost,
 .btn-ghost {
   background: transparent;
   color: var(--text-secondary);
+  border: none;
 }
+button.btn-ghost:hover,
 .btn-ghost:hover { background: var(--glass-bg); color: var(--text); }
 
+button.btn-icon,
 .btn-icon {
   width: 44px;
   height: 44px;
@@ -315,24 +343,39 @@ ul, ol { list-style: none; }
   border-radius: var(--radius);
 }
 
+button.btn-full,
 .btn-full { width: 100%; }
 
+button.btn-outline,
 .btn-outline {
-  padding: var(--sp-2) var(--sp-5);
-  border-radius: var(--radius);
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--duration-normal) var(--ease-out);
-  min-height: 40px;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
+  background: transparent !important;
+  border: 1.5px solid var(--border) !important;
+  color: var(--text-secondary) !important;
 }
-.btn-outline:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+button.btn-outline:hover,
+.btn-outline:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  background: var(--accent-glow) !important;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+button.btn-outline:active,
+.btn-outline:active { transform: scale(0.97); }
+
+button.btn-danger,
+.btn-danger {
+  background: rgba(239, 68, 68, 0.1) !important;
+  border: 1.5px solid rgba(239, 68, 68, 0.3) !important;
+  color: #ef4444 !important;
+}
+button.btn-danger:hover,
+.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+}
+button.btn-danger:active,
+.btn-danger:active { transform: scale(0.97); }
 
 /* ═══════════════════════════════════════
    CARDS — Enhanced with Gradient Accents
@@ -342,7 +385,8 @@ ul, ol { list-style: none; }
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--sp-6);
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: border-color var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
   position: relative;
   overflow: hidden;
 }
@@ -389,7 +433,7 @@ ul, ol { list-style: none; }
   color: var(--text);
   font-size: var(--text-base);
   outline: none;
-  transition: border-color var(--duration-normal), box-shadow var(--duration-normal), background var(--duration-normal);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
   min-height: 48px;
 }
 .field input:focus,

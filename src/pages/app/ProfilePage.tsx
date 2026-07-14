@@ -74,7 +74,24 @@ export default function ProfilePage() {
             {name[0]?.toUpperCase() || 'T'}
           </motion.div>
           <div className="profile-details">
-            <h1>{name}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <h1>{name}</h1>
+              {profile?.premium && (
+                <span style={{
+                  fontSize: 'var(--text-xs)', fontWeight: 700,
+                  padding: '2px 8px', borderRadius: 'var(--radius-full)',
+                  background: 'linear-gradient(135deg, #f59e0b, #f97316)',
+                  color: '#fff',
+                }}>⭐ Premium</span>
+              )}
+              {profile?.admin && (
+                <span style={{
+                  fontSize: 'var(--text-xs)', fontWeight: 700,
+                  padding: '2px 8px', borderRadius: 'var(--radius-full)',
+                  background: 'rgba(168,85,247,0.12)', color: '#a855f7',
+                }}>👑 Админ</span>
+              )}
+            </div>
             <p className="muted">{profile?.email}</p>
             {!editing ? (
               <p className="muted">{bio || 'Нет описания'}</p>

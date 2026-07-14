@@ -12,6 +12,9 @@ const Login = lazy(() => import('./pages/auth/Login'))
 const Register = lazy(() => import('./pages/auth/Register'))
 const DashboardPage = lazy(() => import('./pages/app/DashboardPage'))
 const CoursesPage = lazy(() => import('./pages/app/CoursesPage'))
+const CourseDetailPage = lazy(() => import('./pages/app/CourseDetailPage'))
+const LessonPage = lazy(() => import('./pages/app/LessonPage'))
+const QuizPage = lazy(() => import('./pages/app/QuizPage'))
 const JournalPage = lazy(() => import('./pages/app/JournalPage'))
 const CommunityPage = lazy(() => import('./pages/app/CommunityPage'))
 const NewsPage = lazy(() => import('./pages/app/NewsPage'))
@@ -23,6 +26,7 @@ const CommunityMod = lazy(() => import('./pages/admin/CommunityMod'))
 const Analytics = lazy(() => import('./pages/admin/Analytics'))
 const CourseProgress = lazy(() => import('./pages/admin/CourseProgress'))
 const NotificationsAdmin = lazy(() => import('./pages/admin/NotificationsAdmin'))
+const QuizManager = lazy(() => import('./pages/admin/QuizManager'))
 
 const Load = () => (
   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', color: 'var(--text-secondary)' }}>
@@ -90,6 +94,9 @@ export default function App() {
           <Route path="app" element={<Protected><DashboardLayout /></Protected>}>
             <Route index element={<PageWrap><DashboardPage /></PageWrap>} />
             <Route path="courses" element={<PageWrap><CoursesPage /></PageWrap>} />
+            <Route path="course/:id" element={<PageWrap><CourseDetailPage /></PageWrap>} />
+            <Route path="course/:courseId/lesson/:lessonId" element={<PageWrap><LessonPage /></PageWrap>} />
+            <Route path="quiz/:quizId" element={<PageWrap><QuizPage /></PageWrap>} />
             <Route path="journal" element={<PageWrap><JournalPage /></PageWrap>} />
             <Route path="community" element={<PageWrap><CommunityPage /></PageWrap>} />
             <Route path="news" element={<PageWrap><NewsPage /></PageWrap>} />
@@ -101,6 +108,7 @@ export default function App() {
             <Route path="admin/analytics" element={<AdminOnly><PageWrap><Analytics /></PageWrap></AdminOnly>} />
             <Route path="admin/courses" element={<AdminOnly><PageWrap><CourseProgress /></PageWrap></AdminOnly>} />
             <Route path="admin/notifications" element={<AdminOnly><PageWrap><NotificationsAdmin /></PageWrap></AdminOnly>} />
+            <Route path="admin/quizzes" element={<AdminOnly><PageWrap><QuizManager /></PageWrap></AdminOnly>} />
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

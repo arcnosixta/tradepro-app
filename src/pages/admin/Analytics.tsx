@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
-import { useAllUsers, useAllTrades, useAdminCommunity } from '../../hooks/useFirestore'
+import { useAnalyticsData } from '../../hooks/useFirestore'
 import './admin.css'
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number]
@@ -41,12 +41,8 @@ function StatBox({ label, value, color }: { label: string; value: string; color:
 }
 
 export default function Analytics() {
-  const { users, loading: usersLoading } = useAllUsers()
-  const { trades, loading: tradesLoading } = useAllTrades()
-  const { posts, loading: postsLoading } = useAdminCommunity()
+  const { users, trades, posts, loading } = useAnalyticsData()
   const nav = useNavigate()
-
-  const loading = usersLoading || tradesLoading || postsLoading
 
   const analytics = useMemo(() => {
     const now = Date.now()
