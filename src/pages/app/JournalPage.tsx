@@ -224,9 +224,9 @@ function TradeCalendar({ trades, selectedDate, onSelect }: {
   return (
     <div className="cal-card">
       <div className="cal-head">
-        <motion.button className="cal-nav" whileTap={{ scale: 0.9 }} onClick={goToPrev}>‹</motion.button>
+        <button className="cal-nav" onClick={goToPrev}>‹</button>
         <span className="cal-title">{MONTHS[month]} {year}</span>
-        <motion.button className="cal-nav" whileTap={{ scale: 0.9 }} onClick={goToNext}>›</motion.button>
+        <button className="cal-nav" onClick={goToNext}>›</button>
       </div>
       <div className="cal-weekdays">
         {WEEKDAYS.map(w => <span key={w} className="cal-wd">{w}</span>)}
@@ -242,15 +242,14 @@ function TradeCalendar({ trades, selectedDate, onSelect }: {
           let dotClass = ''
           if (hasData) dotClass = pnl > 0 ? 'cal-dot-green' : pnl < 0 ? 'cal-dot-red' : 'cal-dot-gray'
           return (
-            <motion.button
+            <button
               key={key}
               className={`cal-cell ${isToday ? 'cal-today' : ''} ${isSelected ? 'cal-selected' : ''}`}
-              whileTap={{ scale: 0.9 }}
               onClick={() => onSelect(isSelected ? null : key)}
             >
               <span className="cal-day">{parseInt(d)}</span>
               {hasData && <span className={`cal-dot ${dotClass}`} />}
-            </motion.button>
+            </button>
           )
         })}
       </div>
@@ -362,7 +361,7 @@ export default function JournalPage() {
           <h1 className="pg-title">Дневник сделок</h1>
           <p className="pg-sub">{dateLabel ? `${dateLabel}` : 'Анализируй сделки и улучшай стратегию'}</p>
         </div>
-        <motion.button className="btn-primary" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={() => setShowForm(!showForm)}>
+        <motion.button className="btn-primary" whileHover={{ scale: 1.03 }} onClick={() => setShowForm(!showForm)}>
           <PlusIcon size={18} /> Сделка
         </motion.button>
       </div>
@@ -385,21 +384,19 @@ export default function JournalPage() {
           >
             <div className="jf-head">
               <span className="jf-title">Новая сделка</span>
-              <motion.button className="jf-close" whileTap={{ scale: 0.9 }} onClick={() => setShowForm(false)}>
+              <button className="jf-close" onClick={() => setShowForm(false)}>
                 <CloseIcon size={18} />
-              </motion.button>
+              </button>
             </div>
             <div className="jf-type-row">
-              <motion.button
+              <button
                 className={`jf-type-btn jf-long ${form.type === 'LONG' ? 'jf-type-active' : ''}`}
-                whileTap={{ scale: 0.95 }}
                 onClick={() => setForm(p => ({ ...p, type: 'LONG' }))}
-              >LONG</motion.button>
-              <motion.button
+              >LONG</button>
+              <button
                 className={`jf-type-btn jf-short ${form.type === 'SHORT' ? 'jf-type-active' : ''}`}
-                whileTap={{ scale: 0.95 }}
                 onClick={() => setForm(p => ({ ...p, type: 'SHORT' }))}
-              >SHORT</motion.button>
+              >SHORT</button>
             </div>
             <div className="jf-fields">
               <div className="jf-field">
@@ -429,14 +426,13 @@ export default function JournalPage() {
               >
                 <div className="jf-presets-row">
                   {LOT_PRESETS.map(lot => (
-                    <motion.button
+                    <button
                       key={lot}
                       className={`jf-preset ${lots === lot ? 'jf-preset-active' : ''}`}
-                      whileTap={{ scale: 0.95 }}
                       onClick={() => setForm(p => ({ ...p, qty: String(lot) }))}
                     >
                       {lot}
-                    </motion.button>
+                    </button>
                   ))}
                 </div>
                 {entryPrice > 0 && lots > 0 && (
@@ -472,7 +468,6 @@ export default function JournalPage() {
             <motion.button
               className="btn-primary btn-full"
               whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
               onClick={handleAdd}
               disabled={!form.symbol || !form.entry}
             >
@@ -484,8 +479,8 @@ export default function JournalPage() {
 
       <div className="journal-charts">
         <div className="chart-tabs">
-          <motion.button className={`filter-btn ${chartPeriod === 'week' ? 'filter-active' : ''}`} onClick={() => setChartPeriod('week')} whileTap={{ scale: 0.96 }}>Неделя</motion.button>
-          <motion.button className={`filter-btn ${chartPeriod === 'month' ? 'filter-active' : ''}`} onClick={() => setChartPeriod('month')} whileTap={{ scale: 0.96 }}>Месяц</motion.button>
+          <button className={`filter-btn ${chartPeriod === 'week' ? 'filter-active' : ''}`} onClick={() => setChartPeriod('week')}>Неделя</button>
+          <button className={`filter-btn ${chartPeriod === 'month' ? 'filter-active' : ''}`} onClick={() => setChartPeriod('month')}>Месяц</button>
         </div>
         <div className="journal-charts-row">
           <div className="journal-charts-main">
@@ -503,9 +498,9 @@ export default function JournalPage() {
       {selectedDate && (
         <motion.div className="cal-filter-info" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
           <span>Показаны сделки за {dateLabel}</span>
-          <motion.button className="cal-filter-clear" whileTap={{ scale: 0.9 }} onClick={() => setSelectedDate(null)}>
+          <button className="cal-filter-clear" onClick={() => setSelectedDate(null)}>
             <CloseIcon size={14} /> Показать все
-          </motion.button>
+          </button>
         </motion.div>
       )}
 
@@ -541,9 +536,9 @@ export default function JournalPage() {
                   </div>
                   {t.notes && <div className="jt-notes muted">{t.notes}</div>}
                 </div>
-                <motion.button className="jt-delete" whileTap={{ scale: 0.85 }} onClick={() => handleDelete(t.id)}>
+                <button className="jt-delete" onClick={() => handleDelete(t.id)}>
                   <TrashIcon size={14} />
-                </motion.button>
+                </button>
               </motion.div>
             ))}
           </div>

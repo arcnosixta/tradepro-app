@@ -44,11 +44,7 @@ export default function NewsPage() {
           <h1 className="pg-title">Новости рынка</h1>
           <p className="pg-sub" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             Обновлено {timeSince(lastRefresh)}
-            <motion.span
-              style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#22c55e' }}
-              animate={{ opacity: [1, 0.3, 1], scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
+            <span className="live-dot" />
           </p>
         </div>
         <motion.button className="btn-outline" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }} onClick={refresh} style={{ flexShrink: 0 }}>
@@ -102,14 +98,9 @@ export default function NewsPage() {
                     XAU {IMPACT_STYLES[filtered[0].impact].label}
                   </span>
                   {isRecent(filtered[0].date) && (
-                    <motion.span
-                      className="tag-sm"
-                      style={{ background: 'rgba(239,68,68,0.15)', color: '#ef4444' }}
-                      animate={{ opacity: [1, 0.6, 1] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >
+                    <span className="tag-sm live-pulse" style={{ background: 'rgba(239,68,68,0.15)', color: '#ef4444' }}>
                       LIVE
-                    </motion.span>
+                    </span>
                   )}
                 </div>
                 <h2>{filtered[0].title}</h2>
@@ -125,13 +116,12 @@ export default function NewsPage() {
                   <img src={n.image} alt="" className="nc-img" loading="lazy" />
                   <div className="nc-overlay" />
                   {isRecent(n.date) && (
-                    <motion.span
+                    <span
+                      className="live-pulse"
                       style={{ position: 'absolute', top: 8, right: 8, background: '#ef4444', color: '#fff', fontSize: '0.6rem', fontWeight: 700, padding: '2px 8px', borderRadius: 100, zIndex: 1 }}
-                      animate={{ opacity: [1, 0.6, 1] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
                     >
                       LIVE
-                    </motion.span>
+                    </span>
                   )}
                 </div>
                 <div className="nc-body">

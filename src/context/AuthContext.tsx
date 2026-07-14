@@ -19,6 +19,7 @@ export interface UserProfile {
   avatar: string
   banner: string
   bio: string
+  balance: number
   joinedAt: string
   admin?: boolean
   banned?: boolean
@@ -72,6 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               avatar: fbUser.photoURL || '',
               banner: '',
               bio: '',
+              balance: 0,
               joinedAt: new Date().toISOString(),
               admin: isAdminEmail,
             }
@@ -91,6 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             avatar: fbUser.photoURL || '',
             banner: '',
             bio: '',
+            balance: 0,
             joinedAt: new Date().toISOString(),
           })
         }
@@ -122,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await updateProfile(cred.user, { displayName: name })
       const isAdminEmail = ADMIN_EMAILS.includes(email)
       const p: UserProfile = {
-        uid: cred.user.uid, name, email, avatar: '', banner: '', bio: '',
+        uid: cred.user.uid, name, email, avatar: '', banner: '', bio: '', balance: 0,
         joinedAt: new Date().toISOString(),
         admin: isAdminEmail,
       }

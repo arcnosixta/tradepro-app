@@ -18,7 +18,7 @@ function AnimatedStat({ label, value, color }: { label: string; value: string; c
   const animated = useCountUp(numMatch ? parseFloat(numMatch[0].replace(/,/g, '')) : 0)
   const display = numMatch ? value.replace(numMatch[0], animated.toLocaleString()) : value
   return (
-    <motion.div className="ps" variants={fadeUp} whileHover={{ y: -3, scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+    <motion.div className="ps ps-interactive" variants={fadeUp}>
       <div className="ps-l">{label}</div>
       <div className="ps-v" style={{ color }}>{display}</div>
     </motion.div>
@@ -32,6 +32,8 @@ export default function ProfilePage() {
   const { courses } = useCourses()
   const { toast } = useToast()
   const [editing, setEditing] = useState(false)
+  const [editingBalance, setEditingBalance] = useState(false)
+  const [balanceInput, setBalanceInput] = useState(String(profile?.balance || 0))
   const [name, setName] = useState(profile?.name || '')
   const [bio, setBio] = useState(profile?.bio || '')
   const avatarInput = useRef<HTMLInputElement>(null)
@@ -119,6 +121,14 @@ export default function ProfilePage() {
     } catch { toast('Ошибка загрузки', 'error') }
   }
 
+  const handleBalanceSave = async () => {
+    const val = parseFloat(balanceInput)
+    if (isNaN(val)) { toast('Введите число', 'error'); return }
+    await updateProfileData({ balance: val })
+    setEditingBalance(false)
+    toast('Баланс обновлён', 'success')
+  }
+
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} style={{ maxWidth: 900 }}>
       <motion.div className="profile-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -195,18 +205,67 @@ export default function ProfilePage() {
         ))}
       </motion.div>
 
+      <motion.div className="section-block" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.4 }}>
+        <h2>Баланс</h2>
+        <div className="balance-card">
+          <div className="balance-display">
+            <span className="balance-label">Текущий баланс</span>
+            {!editingBalance ? (
+              <div className="balance-row">
+                <span className="balance-amount">${(profile?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <motion.button
+                  className="balance-edit-btn"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => { setBalanceInput(String(profile?.balance || 0)); setEditingBalance(true) }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                  Изменить
+                </motion.button>
+              </div>
+            ) : (
+              <motion.div
+                className="balance-edit-row"
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="balance-input-wrap">
+                  <span className="balance-input-prefix">$</span>
+                  <input
+                    className="balance-input"
+                    type="number"
+                    step="0.01"
+                    value={balanceInput}
+                    onChange={e => setBalanceInput(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleBalanceSave()}
+                    autoFocus
+                  />
+                </div>
+                <div className="balance-edit-actions">
+                  <motion.button className="balance-save" whileTap={{ scale: 0.95 }} onClick={handleBalanceSave}>✓</motion.button>
+                  <motion.button className="balance-cancel" whileTap={{ scale: 0.95 }} onClick={() => setEditingBalance(false)}>✕</motion.button>
+                </div>
+              </motion.div>
+            )}
+          </div>
+          <div className="balance-hint">Баланс отображается на дашборде и в статистике</div>
+        </div>
+      </motion.div>
+
       <motion.div className="section-block" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.4 }}>
         <h2>Достижения <span className="ach-count">{achievements.filter(a => a.ok).length}/{achievements.length}</span></h2>
         <div className="ach-grid">
           {achievements.map((a, i) => (
             <motion.div
               key={a.t}
-              className={`ach ${a.ok ? '' : 'ach-locked'}`}
-              initial={{ opacity: 0, scale: 0.8 }}
+              className={`ach ach-interactive ${a.ok ? '' : 'ach-locked'}`}
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 + i * 0.05, type: 'spring', stiffness: 200 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
+              transition={{ delay: 0.3 + i * 0.03, duration: 0.3 }}
             >
               <div className="ach-icon">{a.icon}</div>
               <div className="ach-t">{a.t}</div>
@@ -216,7 +275,7 @@ export default function ProfilePage() {
                   className="ach-ok"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 300, delay: 0.5 + i * 0.08 }}
+                  transition={{ delay: 0.5 + i * 0.04, duration: 0.3 }}
                 >
                   ✓
                 </motion.div>

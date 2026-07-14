@@ -222,7 +222,7 @@ export default function CommunityPage() {
               const isLiked = (post.likedBy || []).includes(profile?.uid || '')
               const isSaved = (post.savedBy || []).includes(profile?.uid || '')
               return (
-                <motion.div key={post.id} className="post-card" variants={fadeUp} layout>
+                <motion.div key={post.id} className="post-card" variants={fadeUp}>
                   <div className="post-head">
                     <div className="post-av" onClick={() => nav(`/app/user/${post.authorUid}`)}>
                       {post.authorAvatar ? <img src={post.authorAvatar} alt="" /> : post.authorName[0]}
@@ -312,9 +312,9 @@ export default function CommunityPage() {
               disabled={uploading || (!text.trim() && !imageFile)}
             >
               {uploading ? (
-                <motion.span animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }} style={{ display: 'flex' }}>
+                <span className="spin-icon" style={{ display: 'flex' }}>
                   <SendIcon size={18} />
-                </motion.span>
+                </span>
               ) : (
                 <SendIcon size={18} />
               )}

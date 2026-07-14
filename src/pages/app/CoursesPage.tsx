@@ -57,7 +57,6 @@ export default function CoursesPage() {
               key={c.id}
               className="course-card"
               variants={cardVariant}
-              layout
               whileHover={!isPremium ? { y: -6, scale: 1.01 } : {}}
               whileTap={!isPremium ? { scale: 0.99 } : {}}
               onClick={() => {

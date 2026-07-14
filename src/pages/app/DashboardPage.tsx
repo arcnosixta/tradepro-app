@@ -120,9 +120,9 @@ function EconCalendar() {
       </div>
 
       <div className="econ-cal-nav">
-        <motion.button className="cal-nav" whileTap={{ scale: 0.9 }} onClick={goToPrev}>‹</motion.button>
+        <button className="cal-nav" onClick={goToPrev}>‹</button>
         <span className="cal-title">{MONTHS_RU[month]} {year}</span>
-        <motion.button className="cal-nav" whileTap={{ scale: 0.9 }} onClick={goToNext}>›</motion.button>
+        <button className="cal-nav" onClick={goToNext}>›</button>
       </div>
 
       <div className="econ-cal-weekdays">
@@ -140,10 +140,9 @@ function EconCalendar() {
           const hasMed = dayEvents.some(e => e.impact === 'medium')
 
           return (
-            <motion.button
+            <button
               key={key}
               className={`econ-cal-cell ${isToday ? 'econ-today' : ''} ${isSelected ? 'econ-selected' : ''} ${dayEvents.length > 0 ? 'econ-has-events' : ''}`}
-              whileTap={{ scale: 0.92 }}
               onClick={() => setSelectedDate(isSelected ? null : key)}
             >
               <span className="econ-day-num">{parseInt(d)}</span>
@@ -154,7 +153,7 @@ function EconCalendar() {
                   {!hasHigh && !hasMed && dayEvents.length > 0 && <span className="econ-dot" style={{ background: '#22c55e' }} />}
                 </div>
               )}
-            </motion.button>
+            </button>
           )
         })}
       </div>
@@ -172,9 +171,9 @@ function EconCalendar() {
               <span className="econ-events-date">
                 {new Date(selectedDate + 'T12:00:00').toLocaleDateString('ru', { day: 'numeric', month: 'long' })}
               </span>
-              <motion.button className="econ-events-close" whileTap={{ scale: 0.9 }} onClick={() => setSelectedDate(null)}>
+              <button className="econ-events-close" onClick={() => setSelectedDate(null)}>
                 <CloseIcon size={14} />
-              </motion.button>
+              </button>
             </div>
             <div className="econ-events-list">
               {selectedEvents.map((ev, i) => (
@@ -235,7 +234,7 @@ export default function DashboardPage() {
   const cp = totalL > 0 ? Math.round((doneL / totalL) * 100) : 0
 
   const stats = [
-    { label: 'Баланс', value: '24,850', ch: '+12.4%', pos: true, prefix: '$', color: '#22c55e' },
+    { label: 'Баланс', value: (profile?.balance || 0).toLocaleString('en-US'), ch: '+12.4%', pos: true, prefix: '$', color: '#22c55e' },
     { label: 'Сделки', value: String(closed.length), ch: `${closed.length} закрытых`, pos: true, prefix: '', color: '#06b6d4' },
     { label: 'Винрейт', value: `${wr}`, ch: `${wins}/${closed.length}`, pos: wr >= 50, prefix: '', color: '#a855f7' },
     { label: 'На курсах', value: `${cp}`, ch: `${doneL}/${totalL} уроков`, pos: true, prefix: '', color: '#f59e0b' },
@@ -255,10 +254,8 @@ export default function DashboardPage() {
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
-              className="stat-card"
+              className="stat-card stat-card-interactive"
               variants={fadeUp}
-              whileHover={{ y: -6, scale: 1.03 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             >
               <div className="stat-icon" style={{ background: `${s.color}18` }}>
                 {statIcons[i](s.color)}

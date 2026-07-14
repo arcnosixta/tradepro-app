@@ -673,6 +673,7 @@ button.btn-sm:active,
   transition: all var(--duration-fast);
   min-height: 44px;
 }
+.jf-type-btn:active { transform: scale(0.95); }
 .jf-type-active.jf-long {
   background: rgba(34,197,94,0.12) !important;
   border-color: #22c55e !important;
@@ -736,6 +737,7 @@ button.btn-sm:active,
   border-color: var(--accent);
   color: var(--text);
 }
+.jf-preset:active { transform: scale(0.95); }
 
 .jf-preset-active {
   background: var(--accent) !important;
@@ -872,6 +874,7 @@ button.btn-sm:active,
   background: transparent !important;
 }
 .cal-nav:hover { background: var(--accent-glow); color: var(--text); }
+.cal-nav:active { transform: scale(0.9); }
 
 .cal-weekdays {
   display: grid; grid-template-columns: repeat(7, 1fr);
@@ -898,6 +901,7 @@ button.btn-sm:active,
   position: relative;
 }
 .cal-cell:hover { background: var(--bg-card-hover); }
+.cal-cell:active { transform: scale(0.9); }
 .cal-empty { cursor: default; }
 .cal-empty:hover { background: transparent; }
 
@@ -1644,8 +1648,153 @@ button.img-preview-rm:hover,
 .ps-l { font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--sp-2); position: relative; }
 .ps-v { font-size: var(--text-xl); font-weight: 800; position: relative; font-variant-numeric: tabular-nums; }
 
+.ps-interactive { cursor: default; }
+.ps-interactive:hover { transform: translateY(-3px) scale(1.02); }
+.ps-interactive:active { transform: scale(0.98); }
+
+.ach-interactive { cursor: default; }
+.ach-interactive:hover { transform: scale(1.05); }
+.ach-interactive:active { transform: scale(0.97); }
+
 .section-block { margin-bottom: var(--sp-7); }
 .section-block h2 { font-size: var(--text-lg); font-weight: 700; color: var(--text); margin-bottom: var(--sp-4); }
+
+/* ─── Balance Card ─── */
+.balance-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.balance-display {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.balance-label {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.balance-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+.balance-amount {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.balance-edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: var(--radius-full);
+  color: var(--accent);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.balance-edit-btn:hover {
+  background: rgba(168, 85, 247, 0.18);
+  border-color: var(--accent);
+}
+
+.balance-edit-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.balance-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.balance-input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.balance-input-prefix {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.balance-input {
+  border: none;
+  background: none;
+  outline: none;
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  width: 140px;
+}
+
+.balance-edit-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.balance-save, .balance-cancel {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all 0.15s ease;
+}
+
+.balance-save {
+  background: #22c55e;
+  color: #fff;
+}
+
+.balance-save:hover { background: #16a34a; }
+
+.balance-cancel {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.balance-cancel:hover { background: rgba(239, 68, 68, 0.2); }
+
+.balance-hint {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
 
 .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--sp-3); }
 
@@ -1858,6 +2007,9 @@ button.img-preview-rm:hover,
   border-color: var(--accent);
   color: var(--text);
 }
+.cal-nav:active {
+  transform: scale(0.9);
+}
 
 .cal-title {
   font-size: var(--text-sm);
@@ -1909,6 +2061,20 @@ button.img-preview-rm:hover,
 
 .econ-cal-cell:hover {
   background: rgba(255, 255, 255, 0.04);
+}
+
+.econ-cal-cell:active {
+  transform: scale(0.92);
+}
+
+.stat-card-interactive {
+  cursor: default;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card-interactive:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .econ-cal-empty {
@@ -2068,4 +2234,45 @@ button.img-preview-rm:hover,
   background: rgba(255, 255, 255, 0.02);
   border-radius: var(--radius-md);
   border: 1px dashed var(--border);
+}
+
+/* ─── CSS Animations (replacing framer-motion infinite repeats) ─── */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: livePulse 2s ease-in-out infinite;
+}
+
+.live-pulse {
+  animation: livePulse 1.5s ease-in-out infinite;
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+/* ─── Generic button :active (replaces whileTap across pages) ─── */
+.btn-primary:active,
+.btn-outline:active,
+.filter-btn:active,
+.post-act:active,
+.jt-delete:active,
+.jf-close:active,
+.cal-filter-clear:active,
+.econ-events-close:active,
+.input-bar-tool:active {
+  transform: scale(0.92);
 }
