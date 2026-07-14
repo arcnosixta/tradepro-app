@@ -477,7 +477,7 @@ export function useComments(postId: string | null) {
     return unsub
   }, [postId])
 
-  const addComment = async (data: { authorUid: string; authorName: string; content: string }) => {
+  const addComment = async (data: { authorUid: string; authorName: string; authorAvatar: string; content: string }) => {
     if (!postId) return
     try {
       await addDoc(collection(db, 'posts', postId, 'comments'), { ...data, createdAt: serverTimestamp() })
@@ -787,6 +787,7 @@ export function useAllUsersProgress(courses: Course[]) {
             uid: userDoc.id,
             name: userData.name || '—',
             email: userData.email || '',
+            avatar: userData.avatar || '',
             courses: courseMap,
           })
         }

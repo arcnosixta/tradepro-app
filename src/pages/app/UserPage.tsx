@@ -20,6 +20,7 @@ interface UserData {
   name: string
   email: string
   avatar: string
+  banner: string
   bio: string
   joinedAt: string
   admin?: boolean
@@ -76,16 +77,27 @@ export default function UserPage() {
 
       {/* ─── Profile Card ─── */}
       <motion.div className="profile-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ marginBottom: 24 }}>
-        <div className="profile-bg" style={{ height: 100 }} />
+        <div
+          className="profile-banner"
+          style={{
+            height: 120,
+            ...(userData?.banner ? { backgroundImage: `url(${userData.banner})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {})
+          }}
+        />
         <div style={{ display: 'flex', gap: 16, padding: '0 24px 24px', marginTop: -40, alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <motion.div
-            className="profile-avatar"
-            style={{ width: 80, height: 80, fontSize: '1.8rem' }}
+            className="profile-avatar-wrap"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
           >
-            {authorName[0]?.toUpperCase() || 'U'}
+            {userData?.avatar ? (
+              <img src={userData.avatar} alt="" className="profile-avatar-img" style={{ width: 80, height: 80 }} />
+            ) : (
+              <div className="profile-avatar" style={{ width: 80, height: 80, fontSize: '1.8rem' }}>
+                {authorName[0]?.toUpperCase() || 'U'}
+              </div>
+            )}
           </motion.div>
           <div style={{ flex: 1, paddingTop: 44 }}>
             <h1 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)' }}>
@@ -196,7 +208,9 @@ export default function UserPage() {
                 {posts.map(post => (
                   <motion.div key={post.id} className="post-card" variants={fadeUp}>
                     <div className="post-head">
-                      <div className="post-av">{authorName[0]?.toUpperCase() || 'U'}</div>
+                      <div className="post-av">
+                        {post.authorAvatar ? <img src={post.authorAvatar} alt="" /> : authorName[0]?.toUpperCase() || 'U'}
+                      </div>
                       <div style={{ flex: 1 }}>
                         <div className="post-name">{authorName}</div>
                         <div className="muted" style={{ fontSize: '0.75rem' }}>{post.createdAt?.seconds ? timeAgo(post.createdAt) : ''}</div>

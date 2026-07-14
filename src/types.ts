@@ -111,6 +111,7 @@ export interface Comment {
   postId: string
   authorUid: string
   authorName: string
+  authorAvatar: string
   content: string
   createdAt: any
 }
@@ -132,5 +133,6 @@ export interface UserProgressEntry {
   uid: string
   name: string
   email: string
+  avatar: string
   courses: Record<string, { completed: number; total: number; pct: number; lessons: string[] }>
 }
