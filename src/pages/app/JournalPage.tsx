@@ -271,7 +271,6 @@ export default function JournalPage() {
   const isXau = form.symbol.toUpperCase().includes('XAU')
   const lots = parseFloat(form.qty) || 0
   const entryPrice = parseFloat(form.entry) || 0
-  const exitPrice = parseFloat(form.exit) || 0
   const ozPerLot = isXau ? 100 : 1
   const contractValue = lots * ozPerLot * entryPrice
   const [selectedDate, setSelectedDate] = useState<string | null>(null)

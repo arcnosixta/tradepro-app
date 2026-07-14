@@ -27,7 +27,7 @@ export default function LessonPage() {
   const prev = lessonIndex > 0 ? allLessons[lessonIndex - 1] : null
   const next = lessonIndex < allLessons.length - 1 ? allLessons[lessonIndex + 1] : null
 
-  const { tot, dn, pct } = useMemo(() => {
+  const { pct } = useMemo(() => {
     if (!course) return { tot: 0, dn: 0, pct: 0 }
     const tot = allLessons.length
     const dn = allLessons.filter(l => (progress[course.id] || []).includes(l.id)).length

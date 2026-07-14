@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef } from 'react'
 import { motion } from 'motion/react'
 import { useAuth } from '../../context/AuthContext'
 import { useTrades, useUserProgress, useCourses } from '../../hooks/useFirestore'
@@ -48,7 +48,7 @@ export default function ProfilePage() {
   const avgL = lossN > 0 ? closed.filter(t => t.pnl < 0).reduce((a, t) => a + t.pnl, 0) / lossN : 0
   const pf = avgL !== 0 ? Math.abs(avgW / avgL).toFixed(2) : '∞'
   const bestTrade = closed.length > 0 ? Math.max(...closed.map(t => t.pnl)) : 0
-  const worstTrade = closed.length > 0 ? Math.min(...closed.map(t => t.pnl)) : 0
+  // worstTrade available if needed
 
   let maxStreak = 0, curStreak = 0
   closed.forEach(t => { if (t.pnl > 0) { curStreak++; maxStreak = Math.max(maxStreak, curStreak) } else { curStreak = 0 } })

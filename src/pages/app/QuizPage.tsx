@@ -6,14 +6,14 @@ import { useQuizById, useQuizResult, submitQuiz } from '../../hooks/useFirestore
 import type { QuizResult } from '../../types'
 import './pages.css'
 
-const ease = [0.22, 1, 0.36, 1] as [number, number, number, number]
+
 
 export default function QuizPage() {
   const { quizId } = useParams<{ quizId: string }>()
   const nav = useNavigate()
   const { profile } = useAuth()
   const { quiz: quizData, loading: quizLoading } = useQuizById(quizId)
-  const { result: prevResult, loading: resultLoading } = useQuizResult(profile?.uid, quizId)
+  const { loading: resultLoading } = useQuizResult(profile?.uid, quizId)
 
   const [currentQ, setCurrentQ] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})

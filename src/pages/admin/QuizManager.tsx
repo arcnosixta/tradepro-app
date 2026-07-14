@@ -31,7 +31,7 @@ export default function QuizManager() {
     if (!questionForm.question.trim()) return
     const q = { ...questionForm }
     if (q.type === 'choice') {
-      q.options = q.options.filter(o => o.trim())
+      q.options = (q.options ?? []).filter(o => o.trim())
     } else {
       q.options = undefined
     }

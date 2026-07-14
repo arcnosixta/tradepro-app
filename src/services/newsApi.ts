@@ -22,7 +22,7 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
 }
 
-function scoreImpactXau(title: string, category: string): 'high' | 'medium' | 'low' {
+function scoreImpactXau(title: string, _category: string): 'high' | 'medium' | 'low' {
   const t = title.toLowerCase()
 
   if (
